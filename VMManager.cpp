@@ -16,14 +16,14 @@ void VMManager::loadROM(std::string filename){
         std::cout<<"[error] Failed to open "<<filename<<std::endl;
         return;
     }
-    std::cout<<"[info] Reading from "<<filename<<std::endl;
+    //std::cout<<"[info] Reading from "<<filename<<std::endl;
     uint32_t temp;
     uint16_t dp = 0;
     while(binaryfilestream.read(reinterpret_cast<char*>(&temp), sizeof(temp))){
         tempr[dp] = temp;
         dp++;
     }
-    std::cout<<"[info] Done reading from "<<filename<<std::endl;
+    //std::cout<<"[info] Done reading from "<<filename<<std::endl;
     binaryfilestream.close();
     loaded = true;
     load(tempr);
@@ -36,8 +36,9 @@ void VMManager::run(bool stepmode){  ///TODO: implement non buffered io
     std::chrono::time_point<std::chrono::system_clock> t2;
     uint64_t steps = 0;
     char temp;
-    if(!stepmode){
-        while(!halt){
+    
+    while(!halt){
+        if(!stepmode){
             if(skiptick){
                 skiptick--;
                 continue;
@@ -46,8 +47,9 @@ void VMManager::run(bool stepmode){  ///TODO: implement non buffered io
             peripherals->tickAll();
             steps++;
             if(breakpoint){
-                std::cout<<"[info] Breakpoint hit, press a key to continue"<<std::endl;
+                std::cout<<"[info] Breakpoint hit, press a key to continue, press 's' to enter step mode (s again to exit)"<<std::endl;
                 std::cin>>temp;
+                stepmode = (temp == 's');
             }
             if(halt){
                 t2 = std::chrono::system_clock::now();
@@ -65,20 +67,20 @@ void VMManager::run(bool stepmode){  ///TODO: implement non buffered io
                 else
                     std::cout<<"[info] Program ended too quickly, no average speed can be calculated."<<std::endl;
             }
-        }
-    }else{
-        char temp;
-        while(!halt){
-            dump();
-            step();
-            std::cin>>temp;
-            if(halt){
-                t2 = std::chrono::system_clock::now();
-                std::cout<<"[Info] An HLT was caught, press 'c' to continue, anything else to end program."<<std::endl;
+        }else{
+            char temp;
+            while(!halt){
+                dump();
+                step();
                 std::cin>>temp;
-                if(temp == 'c'){
-                    halt=false;
-                    continue;
+                if(halt){
+                    t2 = std::chrono::system_clock::now();
+                    std::cout<<"[Info] An HLT was caught, press 'c' to continue, anything else to end program."<<std::endl;
+                    std::cin>>temp;
+                    if(temp == 'c'){
+                        halt=false;
+                        continue;
+                    }
                 }
             }
         }

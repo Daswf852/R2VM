@@ -16,9 +16,9 @@ class PeripheralManager
     protected:
 
     private:
-        typedef void (*tickFunc_t)();
+        typedef void (*Func_t)();
         std::array<void*, 256> ports;
-        std::array<tickFunc_t, 256> tickfs;
+        std::array<Func_t, 256> tickfs;
         std::vector<std::string> stuffToOpen;
         uint8_t portPointer = 0;
 };
