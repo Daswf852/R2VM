@@ -1,5 +1,6 @@
 # R2VM  
 It's what the repo description says.  
+Manual: https://lbphacker.pw/powdertoy/R216/manual.md  
 ## How to compile and run  
 `g++ *.cpp -o r2vm`  
 `lua r2asm.mod.lua <assembly>`  
