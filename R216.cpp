@@ -6,6 +6,10 @@ R216::R216(){
 R216::~R216(){
 }
 
+void R216::setPM(PeripheralManager *PM){
+    peripherals = PM;
+}
+
 void R216::load(std::array<uint32_t, 65536> rom){
     memory=rom;
 }
@@ -203,16 +207,20 @@ void R216::step(){
                     temp16 = readClass1aData(cInstruction);
                     std::cout<<"[info] Special call "<<temp16<<" is made"<<std::endl;
                     switch(temp16){
-                        case 1:
+                        case 1: //dump
                             dump(true);
                             break;
-                        case 2:
+                        case 2: //breakpoint
+                            dump(true);
+                            breakpoint=true;
+                            break;
+                        case 3: //mul
                             temp16=memory[registers[14]++];
                             temp16_2=memory[registers[14]++];
                             registers[14]--;
                             memory[registers[14]] = (temp16*temp16_2)|0x20000000;
                             break;
-                        case 3:
+                        case 4: //div
                             temp16=memory[registers[14]++];
                             temp16_2=memory[registers[14]++];
                             registers[14]--;
@@ -322,15 +330,11 @@ void R216::step(){
         case 0x19: ///WAIT
             break;
         case 0x1A: ///SEND --THIS IS TEMPORARY UNTIL MY LAZY ASS IMPLEMENTS THE PM CLASS
-            if(!readClass2DataOP1(cInstruction)){
-                if(!(readClass2DataOP1(cInstruction) & 0xF000)){ //check if its just a charcode
-                    std::cout<<static_cast<char>(readClass2DataOP2(cInstruction));
-                }else if(readClass2DataOP1(cInstruction) & 0x1000){ //move
-                    //std::cout<<"\033["<<
-                }else if(readClass2DataOP1(cInstruction) & 0x2000){ //color
-
-                }
-            }
+            readClass2Data(cInstruction);
+            //if(!peripherals){
+                peripherals->sendToPort( ((uint8_t)C2OP1) , (((uint32_t)C2OP2)|0x20000) );
+            //std::cout<<"send\n";
+            //}
             break;
         case 0x1B: ///RECV
             break;

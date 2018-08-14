@@ -1,6 +1,7 @@
 #ifndef R216_H
 #define R216_H
 #include "default.h"
+#include "PeripheralManager.h"
 
 class R216
 {
@@ -11,8 +12,10 @@ class R216
         void step();
         void load(std::array<uint32_t, 65536> rom);
         void dump(bool core = false);
+        void setPM(PeripheralManager *PM);
         bool halt;
         uint8_t skiptick = 0;
+        bool breakpoint;
     private:
         void basicUpdateFlags(uint16_t value);
 
@@ -39,6 +42,8 @@ class R216
         uint16_t readClass2DataOP2(uint32_t instruction);
         void writeClass2Data(uint16_t data, bool updateFlags = true);
         void readClass2Data(uint32_t instruction);
+        
+        PeripheralManager *peripherals;
 };
 
 #endif // R216_H

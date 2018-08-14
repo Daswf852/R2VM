@@ -1,11 +1,12 @@
 #include "VMManager.h"
 
 VMManager::VMManager(){
-
+    peripherals = new PeripheralManager();
+    setPM(peripherals);
 }
 
 VMManager::~VMManager(){
-
+    delete peripherals;
 }
 
 void VMManager::loadROM(std::string filename){
@@ -21,9 +22,6 @@ void VMManager::loadROM(std::string filename){
     while(binaryfilestream.read(reinterpret_cast<char*>(&temp), sizeof(temp))){
         tempr[dp] = temp;
         dp++;
-        //if(!dp){
-            //std::cout<<"[warning] dp got carried while reading from file, will continue from 0"<<std::endl;
-        //}
     }
     std::cout<<"[info] Done reading from "<<filename<<std::endl;
     binaryfilestream.close();
@@ -31,16 +29,13 @@ void VMManager::loadROM(std::string filename){
     load(tempr);
 }
 
-/*void VMManager::_dump(bool core){
-    dump(core);
-}*/ ///DEPRECATED, USE `JN 1` TO DUMP
-
-void VMManager::run(bool stepmode){
+void VMManager::run(bool stepmode){  ///TODO: implement non buffered io
     if(!loaded)
         return;
     std::chrono::time_point<std::chrono::system_clock> t1 = std::chrono::system_clock::now();
     std::chrono::time_point<std::chrono::system_clock> t2;
     uint64_t steps = 0;
+    char temp;
     if(!stepmode){
         while(!halt){
             if(skiptick){
@@ -48,10 +43,14 @@ void VMManager::run(bool stepmode){
                 continue;
             }
             step();
+            peripherals->tickAll();
             steps++;
+            if(breakpoint){
+                std::cout<<"[info] Breakpoint hit, press a key to continue"<<std::endl;
+                std::cin>>temp;
+            }
             if(halt){
                 t2 = std::chrono::system_clock::now();
-                char temp;
                 std::cout<<"[Info] An HLT was caught, press 'c' to continue, anything else to end program."<<std::endl;
                 std::cin>>temp;
                 if(temp == 'c'){

@@ -1,6 +1,7 @@
 #ifndef VMMANAGER_H
 #define VMMANAGER_H
 #include "R216.h"
+#include "PeripheralManager.h"
 
 class VMManager : public R216{
     public:
@@ -14,6 +15,7 @@ class VMManager : public R216{
 
     private:
         bool loaded;
+        PeripheralManager *peripherals;
         //bool debugmode;
         //std::vector<uint16_t> breakpoints;
 };
