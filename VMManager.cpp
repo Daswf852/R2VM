@@ -21,9 +21,9 @@ void VMManager::loadROM(std::string filename){
     while(binaryfilestream.read(reinterpret_cast<char*>(&temp), sizeof(temp))){
         tempr[dp] = temp;
         dp++;
-        if(!dp){
-            std::cout<<"[warning] dp got carried while reading from file, will continue from 0"<<std::endl;
-        }
+        //if(!dp){
+            //std::cout<<"[warning] dp got carried while reading from file, will continue from 0"<<std::endl;
+        //}
     }
     std::cout<<"[info] Done reading from "<<filename<<std::endl;
     binaryfilestream.close();
