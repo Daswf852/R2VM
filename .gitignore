@@ -1,4 +1,5 @@
 *.bin
 *.out
+*.so
 r2vm
 r2asm.lua
