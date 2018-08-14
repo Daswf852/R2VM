@@ -67,13 +67,11 @@ void R216::step(){
             writeClass2Data(C2OP1+C2OP2);
             carry=(temp32&0x10000)?true:false;
             overflow=false;
-            if((C2OP1&0x8000)&&(C2OP2&0x8000)){
-                if(!(temp32&0x8000))
-                    overflow = true;
-            }else if(!((C2OP1&0x8000)&&(C2OP2&0x8000))){
-                if(temp32&0x8000)
-                    overflow = true;
-            }
+            if(!(C2OP1&0x8000) && !(C2OP2&0x8000) && (temp32&0x8000))
+                overflow=true;
+            if((C2OP1&0x8000) && (C2OP2&0x8000) && !(temp32&0x8000))
+                overflow=true;
+            
             break;
         case 5: //ADC
             readClass2Data(cInstruction);
@@ -85,13 +83,10 @@ void R216::step(){
             writeClass2Data(temp32);
             carry=(temp32&0x10000)?true:false;
             overflow=false;
-            if((C2OP1&0x8000)&&(C2OP2&0x8000)){
-                if(!(temp32&0x8000))
-                    overflow = true;
-            }else if(!((C2OP1&0x8000)&&(C2OP2&0x8000))){
-                if(temp32&0x8000)
-                    overflow = true;
-            }
+            if(!(C2OP1&0x8000) && !(C2OP2&0x8000) && (temp32&0x8000))
+                overflow=true;
+            if((C2OP1&0x8000) && (C2OP2&0x8000) && !(temp32&0x8000))
+                overflow=true;
             break;
         case 6: //SUB
             readClass2Data(cInstruction);
@@ -137,13 +132,10 @@ void R216::step(){
             basicUpdateFlags(C2OP1+C2OP2);
             carry=(temp32&0x10000)?true:false;
             overflow=false;
-            if((C2OP1&0x8000)&&(C2OP2&0x8000)){
-                if(!(temp32&0x8000))
-                    overflow = true;
-            }else if(!((C2OP1&0x8000)&&(C2OP2&0x8000))){
-                if(temp32&0x8000)
-                    overflow = true;
-            }
+            if(!(C2OP1&0x8000) && !(C2OP2&0x8000) && (temp32&0x8000))
+                overflow=true;
+            if((C2OP1&0x8000) && (C2OP2&0x8000) && !(temp32&0x8000))
+                overflow=true;
             break;
         case 0xD: //ADCS
             readClass2Data(cInstruction);
@@ -155,13 +147,10 @@ void R216::step(){
             basicUpdateFlags(temp32);
             carry=(temp32&0x10000)?true:false;
             overflow=false;
-            if((C2OP1&0x8000)&&(C2OP2&0x8000)){
-                if(!(temp32&0x8000))
-                    overflow = true;
-            }else if(!((C2OP1&0x8000)&&(C2OP2&0x8000))){
-                if(temp32&0x8000)
-                    overflow = true;
-            }
+            if(!(C2OP1&0x8000) && !(C2OP2&0x8000) && (temp32&0x8000))
+                overflow=true;
+            if((C2OP1&0x8000) && (C2OP2&0x8000) && !(temp32&0x8000))
+                overflow=true;
             break;
         case 0xE: //SUBS
             readClass2Data(cInstruction);
