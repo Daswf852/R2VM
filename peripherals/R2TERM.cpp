@@ -24,8 +24,8 @@ extern "C" {
 
 extern "C" void init(){
     std::cout<<std::endl;
-    //std::cout<<"\033c";
-    //std::cout<<"\033["<<0<<";"<<0<<"H";
+    std::cout<<"\033c";
+    std::cout<<"\033["<<0<<";"<<0<<"H";
 }
 
 extern "C" void tick(){
@@ -43,9 +43,9 @@ extern "C" void tick(){
             //std::cout<<datarx<<std::endl;
             col++;
         }else if(datarx&0x1000){ //https://en.wikipedia.org/wiki/ANSI_escape_code
-            //row = datarx & 0x3E0; //0000 00xx xxxy yyyy
-            //col = datarx & 0x1F;
-            //std::cout<<"\033["<<row<<";"<<col<<"H";
+            row = datarx & 0x3E0; //0000 00xx xxxy yyyy
+            col = datarx & 0x1F;
+            std::cout<<"\033["<<row<<";"<<col<<"H";
             
         }
     }
