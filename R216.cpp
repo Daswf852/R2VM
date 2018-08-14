@@ -95,29 +95,24 @@ void R216::step(){
             break;
         case 6: //SUB
             readClass2Data(cInstruction);
-            writeClass2Data(C2OP1-C2OP2);
+            temp16=C2OP1-C2OP2;
+            writeClass2Data(temp16);
             carry = (C2OP1<C2OP2)?true:false;
             overflow=false;
-            if((C2OP1&0x8000)&&(C2OP2&0x8000)){
-                if(!(temp32&0x8000))
-                    overflow = true;
-            }else if(!((C2OP1&0x8000)&&(C2OP2&0x8000))){
-                if(temp32&0x8000)
-                    overflow = true;
-            }
+            if(!(C2OP1&0x8000) && (C2OP2&0x8000) && (temp16&0x8000))
+                overflow=true;
+            if((C2OP1&0x8000) && !(C2OP2&0x8000) && !(temp16&0x8000))
+                overflow=true;
             break;
         case 7: //SBB
             readClass2Data(cInstruction);
             writeClass2Data(C2OP1-(C2OP2+carry));
             carry = (C2OP1<(C2OP2+carry))?true:false;
             overflow=false;
-            if((C2OP1&0x8000)&&(C2OP2&0x8000)){
-                if(!(temp32&0x8000))
-                    overflow = true;
-            }else if(!((C2OP1&0x8000)&&(C2OP2&0x8000))){
-                if(temp32&0x8000)
-                    overflow = true;
-            }
+            if(!(C2OP1&0x8000) && (C2OP2&0x8000) && (temp16&0x8000))
+                overflow=true;
+            if((C2OP1&0x8000) && !(C2OP2&0x8000) && !(temp16&0x8000))
+                overflow=true;
             break;
         case 8: //SWM
             temp16 = /*(*/(readClass1aData(cInstruction) & 0x1FFF ) /*| 0x2000)*/;
@@ -173,26 +168,21 @@ void R216::step(){
             basicUpdateFlags(C2OP1-C2OP2);
             carry = (C2OP1<C2OP2)?true:false;
             overflow=false;
-            if((C2OP1&0x8000)&&(C2OP2&0x8000)){
-                if(!(temp32&0x8000))
-                    overflow = true;
-            }else if(!((C2OP1&0x8000)&&(C2OP2&0x8000))){
-                if(temp32&0x8000)
-                    overflow = true;
-            }
+            if(!(C2OP1&0x8000) && (C2OP2&0x8000) && (temp16&0x8000))
+                overflow=true;
+            if((C2OP1&0x8000) && !(C2OP2&0x8000) && !(temp16&0x8000))
+                overflow=true;
+            //std::cout<<C2OP1<<", "<<C2OP2<<", "<<temp16<<std::endl;
             break;
         case 0xF: //SBBS
             readClass2Data(cInstruction);
             basicUpdateFlags(C2OP1-(C2OP2+carry));
             carry = (C2OP1<(C2OP2+carry))?true:false;
             overflow=false;
-            if((C2OP1&0x8000)&&(C2OP2&0x8000)){
-                if(!(temp32&0x8000))
-                    overflow = true;
-            }else if(!((C2OP1&0x8000)&&(C2OP2&0x8000))){
-                if(temp32&0x8000)
-                    overflow = true;
-            }
+            if(!(C2OP1&0x8000) && (C2OP2&0x8000) && (temp16&0x8000))
+                overflow=true;
+            if((C2OP1&0x8000) && !(C2OP2&0x8000) && !(temp16&0x8000))
+                overflow=true;
             break;
         case 0x10: //HLT
             halt=true;
@@ -528,6 +518,7 @@ uint16_t R216::readClass2DataOP1(uint32_t instruction){
             return static_cast<uint16_t>(memory[registers[instruction&0xF]]);
             break;
         case 5:
+        case 7:
             return static_cast<uint16_t>(memory[(instruction & 0xFFFF0)>>4]);
             break;
         case 0xC:
