@@ -16,6 +16,7 @@ PeripheralManager::~PeripheralManager(){
 
 void PeripheralManager::addPeripheral(std::string filename){
     void *tempHandle = dlopen(filename.c_str(), RTLD_LAZY);
+    tickFunc_t tempsym;
     if(!tempHandle){
         std::cerr<<"[error] failed to open shared object file "<<filename<<" for port "<<portPointer<<std::endl;
         std::cerr<<dlerror()<<std::endl;
@@ -23,24 +24,19 @@ void PeripheralManager::addPeripheral(std::string filename){
     }
     else{
         ports[portPointer] = tempHandle;
+        tickfs[portPointer] = (tickFunc_t) dlsym(tempHandle, "tick");
+        if(!tickfs[portPointer]){
+            std::cout<<dlerror()<<std::endl;
+            assert(tickfs[portPointer]);
+        }
         portPointer++;
     }
 }
 
 void PeripheralManager::tickAll(){
     tickFunc_t tempsym;
-    for(int i=0; i<portPointer; ++i){ //using portpointer instead of going through all ports is better
-        try{ //it *is* better but just in case
-            tempsym = (tickFunc_t)dlsym(ports.at(i), "tick");
-        }catch(std::out_of_range *oor){
-            std::cout<<oor->what()<<std::endl;
-            continue;
-        }
-        if(!tempsym){
-            std::cout<<dlerror()<<std::endl;
-            continue;
-        }
-        tempsym();
+    for(int i=0; i<portPointer; ++i){ 
+        tickfs[i]();
     }
 }
 
