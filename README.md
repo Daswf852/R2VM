@@ -8,3 +8,6 @@ It's what the repo description says.
 `lua r2asm.lua headless_model=R216DVM headless_out=a.bin <assembly>`  
 `./r2vm -b a.bin`  
 ![works on my machine](https://johan.driessen.se/images/johan_driessen_se/WindowsLiveWriter/PersistanceinWF4beta2_E4AD/works-on-my-machine-starburst_2.png)  
+### TODO  
+ - Read peripheral list from command line/config file/directory
+ - Fix dl being so slow by caching stuff  
