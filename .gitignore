@@ -1,0 +1,4 @@
+*.bin
+*.out
+r2vm
+r2asm.lua
