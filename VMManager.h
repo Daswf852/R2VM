@@ -6,9 +6,9 @@ class VMManager : public R216{
     public:
         VMManager();
         ~VMManager();
-        void loadROM(std::string filename, bool binary = true);
+        void loadROM(std::string filename);
         void run(bool stepmode=false);
-        void _dump(bool core=false);
+        //void _dump(bool core=false); ///DEPRECATED, USE `JN 1` TO DUMP
 
     protected:
 
