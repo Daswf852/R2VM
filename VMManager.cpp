@@ -8,60 +8,32 @@ VMManager::~VMManager(){
 
 }
 
-void VMManager::loadROM(std::string filename, bool binary){
+void VMManager::loadROM(std::string filename){
     std::array<uint32_t, 65536> tempr;
-    if(binary){
-        std::ifstream binaryfilestream(filename, std::ios::binary);
-        if(!binaryfilestream){
-            std::cout<<"[error] Failed to open "<<filename<<std::endl;
-            return;
-        }
-        std::cout<<"[info] Reading from "<<filename<<std::endl;
-        uint32_t temp;
-        uint16_t dp = 0;
-        while(binaryfilestream.read(reinterpret_cast<char*>(&temp), sizeof(temp))){
-            tempr[dp] = temp;
-            dp++;
-            if(!dp){
-                std::cout<<"[warning] dp got carried while reading from file, will continue from 0"<<std::endl;
-            }
-        }
-        std::cout<<"[info] Done reading from "<<filename<<std::endl;
-        binaryfilestream.close();
-    }else{
-        std::ifstream dumpfilestream(filename);
-        if(!dumpfilestream){
-            std::cout<<"[error] Failed to open "<<filename<<std::endl;
-            return;
-        }
-        std::cout<<"[info] Reading from "<<filename<<std::endl;
-        std::string tempstring;
-        std::vector<std::string> filecontents;
-        while(std::getline(dumpfilestream, tempstring))
-            filecontents.push_back(tempstring);
-        dumpfilestream.close();
-        std::cout<<"[info] Done reading from "<<filename<<std::endl;
-        std::cout<<"[info] Converting file contents to binary"<<std::endl;
-        uint16_t dp = 0;
-        for(auto &line : filecontents){
-            try{
-                tempr[dp] = std::stoul(line, nullptr, 16);
-            }catch(std::invalid_argument *inval){
-                std::cout<<"[Warning] Invalid line in dump file!"<<std::endl;
-                std::cout<<"[Debug] "<<inval->what()<<std::endl;
-                continue;
-            }
-            dp++;
-        }
-        std::cout<<"[info] Done converting file contents"<<std::endl;
+    std::ifstream binaryfilestream(filename, std::ios::binary);
+    if(!binaryfilestream){
+        std::cout<<"[error] Failed to open "<<filename<<std::endl;
+        return;
     }
+    std::cout<<"[info] Reading from "<<filename<<std::endl;
+    uint32_t temp;
+    uint16_t dp = 0;
+    while(binaryfilestream.read(reinterpret_cast<char*>(&temp), sizeof(temp))){
+        tempr[dp] = temp;
+        dp++;
+        if(!dp){
+            std::cout<<"[warning] dp got carried while reading from file, will continue from 0"<<std::endl;
+        }
+    }
+    std::cout<<"[info] Done reading from "<<filename<<std::endl;
+    binaryfilestream.close();
     loaded = true;
     load(tempr);
 }
 
-void VMManager::_dump(bool core){
+/*void VMManager::_dump(bool core){
     dump(core);
-}
+}*/ ///DEPRECATED, USE `JN 1` TO DUMP
 
 void VMManager::run(bool stepmode){
     if(!loaded)
