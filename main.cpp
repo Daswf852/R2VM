@@ -17,7 +17,7 @@ int main(int argc, char **argv){
     }else if(argc == 3){
         if(std::string(argv[1]) == std::string("-b")){
             infile = std::string(argv[2]);
-            VMM->loadROM(infile, true);
+            VMM->loadROM(infile);
         }else{
             std::cout<<argv[0]<<" -b [binary]"<<std::endl
                      <<argv[0]<<" -h"<<std::endl;
