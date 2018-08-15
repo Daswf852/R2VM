@@ -9,14 +9,17 @@ class PeripheralManager
     public:
         PeripheralManager();
         ~PeripheralManager();
-        void addPeripheral(std::string filename);
         void tickAll();
         void sendToPort(uint8_t port, uint32_t data);
+        void loadCfg(std::string filename);
 
     protected:
 
     private:
         typedef void (*Func_t)();
+        
+        void addPeripheral(std::string filename);
+        
         std::array<void*, 256> ports;
         std::array<Func_t, 256> tickfs;
         std::vector<std::string> stuffToOpen;

@@ -3,7 +3,7 @@
 PeripheralManager::PeripheralManager(){
     std::fill(ports.begin(), ports.end(), nullptr);
     //temporary:
-    stuffToOpen.push_back("./R2TERM.so");
+    //WstuffToOpen.push_back("./R2TERM.so");
     
     void *tempHandle;
     for(std::vector<std::string>::iterator it = stuffToOpen.begin(); it != stuffToOpen.end(); ++it){
@@ -12,6 +12,18 @@ PeripheralManager::PeripheralManager(){
 }
 
 PeripheralManager::~PeripheralManager(){
+}
+
+void PeripheralManager::loadCfg(std::string filename){
+    std::ifstream cfgstream(filename);
+    if(!cfgstream){
+        std::cout<<"[error] Couldn't open port 'config' file"<<std::endl;
+        return;
+    }
+    std::string str;
+    while(std::getline(cfgstream,str)){
+        addPeripheral(str);
+    }
 }
 
 void PeripheralManager::addPeripheral(std::string filename){

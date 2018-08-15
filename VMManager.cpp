@@ -9,6 +9,10 @@ VMManager::~VMManager(){
     delete peripherals;
 }
 
+void VMManager::loadPER(std::string filename){
+    peripherals->loadCfg(filename);
+}
+
 void VMManager::loadROM(std::string filename){
     std::array<uint32_t, 65536> tempr;
     std::ifstream binaryfilestream(filename, std::ios::binary);
