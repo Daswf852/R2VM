@@ -305,10 +305,12 @@ void R216::step(){
             shifted=true;
             break;
         case 0x18: ///BUMP
+            readClass2Data(cInstruction);
+            peripherals->sendToPort((uint8_t)C2OP1, 0x30000);
             break;
         case 0x19: ///WAIT
             break;
-        case 0x1A: ///SEND --THIS IS TEMPORARY UNTIL MY LAZY ASS IMPLEMENTS THE PM CLASS
+        case 0x1A: ///SEND
             readClass2Data(cInstruction);
             //if(!peripherals){
                 peripherals->sendToPort( ((uint8_t)C2OP1) , (((uint32_t)C2OP2)|0x20000) );
