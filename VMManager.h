@@ -8,6 +8,7 @@ class VMManager : public R216{
         VMManager();
         ~VMManager();
         void loadROM(std::string filename);
+        void loadPER(std::string filename);
         void run(bool stepmode=false);
         //void _dump(bool core=false); ///DEPRECATED, USE `JN 1` TO DUMP
 

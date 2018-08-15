@@ -6,7 +6,7 @@ It's what the repo description says.
 `./compile.sh`  
 `cd peripherals && ./compile.sh && cd..`  
 `lua r2asm.lua headless_model=R216DVM headless_out=a.bin <assembly>`  
-`./r2vm -b a.bin`  
+`./r2vm a.bin ports`  
 ![works on my machine](https://johan.driessen.se/images/johan_driessen_se/WindowsLiveWriter/PersistanceinWF4beta2_E4AD/works-on-my-machine-starburst_2.png)  
 ### TODO  
  - Read peripheral list from command line/config file/directory
