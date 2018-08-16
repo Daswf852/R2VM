@@ -3,3 +3,4 @@
 *.so
 r2vm
 r2asm.lua
+kernel.asm
