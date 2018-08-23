@@ -308,20 +308,15 @@ void R216::step(){
             peripherals->sendToPort((uint8_t)readData(1), 0x30000);
             break;
         case 0x19: ///WAIT
-            readData(2);
-            if(OP1 > 255){
-                writeData(2, OP1, (uint16_t)(-1));
-            }else{
-                if(peripherals->recvFromPort((uint8_t)OP1) == 0x30000){
-                    sign=true;
-                }
-            }
+            
             break;
         case 0x1A: ///SEND
             readData(3);
             peripherals->sendToPort( ((uint8_t)OP1) , (((uint32_t)OP2)|0x20000) );
             break;
         case 0x1B: ///RECV
+            readData(3);
+            writeData(3, peripherals->recvFromPort( ((uint8_t)OP1) ));
             break;
         case 0x1C: //PUSH
             registers[14]--;
@@ -405,7 +400,7 @@ void R216::writeData(uint8_t _class, uint16_t data, bool updateFlags){
                 default:
                     break;
             }
-    }else if(_class == 2){ ///this isnt even needed, there are no class 1* writes...
+    }/*else if(_class == 2){ ///this isnt even needed, there are no class 1* writes...
         switch((memory[registers[15]] & 0xF00000)>>20){
             case 0:
                 registers[memory[registers[15]]&0xF] = data;
@@ -434,7 +429,7 @@ void R216::writeData(uint8_t _class, uint16_t data, bool updateFlags){
             default:
                 break;
         }
-    }
+    }*/
     if(updateFlags)
         basicUpdateFlags(data);
 }
