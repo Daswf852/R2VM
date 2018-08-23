@@ -12,6 +12,14 @@ PeripheralManager::PeripheralManager(){
 }
 
 PeripheralManager::~PeripheralManager(){
+    for(int i=0; i<portPointer; ++i){ 
+        Func_t tempsym = (Func_t) dlsym(ports[portPointer], "deinit");
+        if(!tempsym){
+            std::cout<<dlerror()<<std::endl;
+            assert(ports[portPointer]);
+        }
+        tempsym();
+    }
 }
 
 void PeripheralManager::loadCfg(std::string filename){
