@@ -1,5 +1,37 @@
 #include <iostream>
 #include <stack>
+//shamelessly stolen from SO
+#ifdef WIN32
+#include <windows.h>
+#else
+#include <termios.h>
+#include <unistd.h>
+#endif
+void setStdinEcho(bool enable = true) {
+#ifdef WIN32
+    HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE); 
+    DWORD mode;
+    GetConsoleMode(hStdin, &mode);
+
+    if( !enable )
+        mode &= ~ENABLE_ECHO_INPUT;
+    else
+        mode |= ENABLE_ECHO_INPUT;
+
+    SetConsoleMode(hStdin, mode );
+
+#else
+    struct termios tty;
+    tcgetattr(STDIN_FILENO, &tty);
+    if( !enable )
+        tty.c_lflag &= ~ECHO;
+    else
+        tty.c_lflag |= ECHO;
+
+    (void) tcsetattr(STDIN_FILENO, TCSANOW, &tty);
+#endif
+}
+//(end of)shamelessly stolen from SO
 
 const uint8_t colorlookupfg[16]={30,34,32,36,31,35,33,37,90,94,92,96,91,95,93,97};
 const uint8_t colorlookupbg[16]={40,44,42,46,41,45,43,47,100,104,102,106,101,105,103,107};
@@ -21,7 +53,11 @@ extern "C" {
 extern "C" void init(){
     std::cout<<std::endl;
     std::cout<<"\033c";
-    std::cout<<"\033[0;0H";
+    std::cout<<"\033[1;1H";
+}
+
+extern "C" void deinit(){
+    std::cout<<"\033[13;17H";
 }
 
 extern "C" void tick(){
@@ -43,7 +79,7 @@ extern "C" void tick(){
             col = datarx & 0xF0; //0000 0000 xxxx yyyy
             col >>= 4;
             row = datarx & 0xF;
-            std::cout<<"\033["<<std::to_string(col+1)<<";"<<std::to_string(row+1)<<"f"; "<<std::endl;
+            std::cout<<"\033["<<std::to_string(col+1)<<";"<<std::to_string(row+1)<<"f";
         }else if(datarx&0x2000){
             uint8_t bg = datarx & 0xF0;
             bg >>= 4;
