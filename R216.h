@@ -26,9 +26,7 @@ class R216
         bool running;
         bool active;
 
-        uint16_t C2OP1;
         uint16_t OP1;
-        uint16_t C2OP2;
         uint16_t OP2;
         
         uint16_t prevOP1;
