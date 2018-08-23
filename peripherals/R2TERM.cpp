@@ -1,12 +1,8 @@
 #include <iostream>
 #include <stack>
 
-/* A sample peripheral for R2VM
- * Notes:
- * - Unlike R216, the data sent by the R216 should be cleared by the peripheral to save performance
- */
-
-
+const uint8_t colorlookupfg[16]={30,34,32,36,31,35,33,37,90,94,92,96,91,95,93,97};
+const uint8_t colorlookupbg[16]={40,44,42,46,41,45,43,47,100,104,102,106,101,105,103,107};
 uint8_t row = 0;
 uint8_t col = 0;
 
@@ -25,7 +21,7 @@ extern "C" {
 extern "C" void init(){
     std::cout<<std::endl;
     std::cout<<"\033c";
-    std::cout<<"\033["<<0<<";"<<0<<"H";
+    std::cout<<"\033[0;0H";
 }
 
 extern "C" void tick(){
@@ -34,19 +30,25 @@ extern "C" void tick(){
     }
     if(datarx){
         if(!(datarx&0xF000)){
-            if(col > 16){
+            if(col > 31){ //why the hell is this does what >16 is supposed to do? idk
                 col = 0;
                 row++;
                 std::cout<<std::endl;
             }
             std::cout<<static_cast<char>(datarx);
+            col++;
             //std::cout<<datarx<<std::endl;
             col++;
         }else if(datarx&0x1000){ //https://en.wikipedia.org/wiki/ANSI_escape_code
-            row = datarx & 0x3E0; //0000 00xx xxxy yyyy
-            col = datarx & 0x1F;
-            std::cout<<"\033["<<row<<";"<<col<<"H";
-            
+            col = datarx & 0xF0; //0000 0000 xxxx yyyy
+            col >>= 4;
+            row = datarx & 0xF;
+            std::cout<<"\033["<<std::to_string(col+1)<<";"<<std::to_string(row+1)<<"f"; "<<std::endl;
+        }else if(datarx&0x2000){
+            uint8_t bg = datarx & 0xF0;
+            bg >>= 4;
+            uint8_t fg = datarx & 0xF;
+            std::cout<<"\033["<<std::to_string(colorlookupfg[fg])<<";"<<std::to_string(colorlookupbg[bg])<<"m";
         }
     }
     ///post tick processing:
