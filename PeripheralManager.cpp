@@ -66,3 +66,7 @@ void PeripheralManager::sendToPort(uint8_t port, uint32_t data){
         *bump = true;
     }
 }
+
+uint32_t PeripheralManager::recvFromPort(uint8_t port){
+    return 0;
+}

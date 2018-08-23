@@ -27,21 +27,16 @@ class R216
         bool active;
 
         uint16_t C2OP1;
+        uint16_t OP1;
         uint16_t C2OP2;
+        uint16_t OP2;
+        
         uint16_t prevOP1;
         bool shifted;
         bool chaining;
-
-        uint16_t readClass1Data(uint32_t instruction);
-        void writeClass1Data(uint32_t instruction, uint16_t data);
-
-        uint16_t readClass1aData(uint32_t instruction);
-        void writeClass1aData(uint32_t instruction, uint16_t data);
-
-        uint16_t readClass2DataOP1(uint32_t instruction);
-        uint16_t readClass2DataOP2(uint32_t instruction);
-        void writeClass2Data(uint16_t data, bool updateFlags = true);
-        void readClass2Data(uint32_t instruction);
+        
+        uint16_t readData(uint8_t _class);
+        void writeData(uint8_t _class, uint16_t data, bool updateFlags = true);
         
         PeripheralManager *peripherals;
 };

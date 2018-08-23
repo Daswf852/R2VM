@@ -11,6 +11,7 @@ class PeripheralManager
         ~PeripheralManager();
         void tickAll();
         void sendToPort(uint8_t port, uint32_t data);
+        uint32_t recvFromPort(uint8_t port);
         void loadCfg(std::string filename);
 
     protected:
