@@ -305,17 +305,10 @@ void R216::step(){
             shifted=true;
             break;
         case 0x18: ///BUMP
-<<<<<<< HEAD
             peripherals->sendToPort((uint8_t)readData(1), 0x10000);
             break;
         case 0x19: ///WAIT
             writeData(1, peripherals->highestARPort());
-=======
-            peripherals->sendToPort((uint8_t)readData(1), 0x30000);
-            break;
-        case 0x19: ///WAIT
-            
->>>>>>> e5a3600436c7c0d7219637cbca14820ce6fbb663
             break;
         case 0x1A: ///SEND
             readData(3);
@@ -323,14 +316,10 @@ void R216::step(){
             break;
         case 0x1B: ///RECV
             readData(3);
-<<<<<<< HEAD
             temp16 = peripherals->recvFromPort( ((uint8_t)OP2) );
             writeData(3, temp16);
             if(carry = true; temp16 & 0x20000)
                 carry = false;
-=======
-            writeData(3, peripherals->recvFromPort( ((uint8_t)OP1) ));
->>>>>>> e5a3600436c7c0d7219637cbca14820ce6fbb663
             break;
         case 0x1C: //PUSH
             registers[14]--;

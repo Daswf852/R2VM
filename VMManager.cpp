@@ -1,15 +1,10 @@
 #include "VMManager.h"
 
-<<<<<<< HEAD
+
 VMManager::VMManager(int _rate){
     peripherals = new PeripheralManager();
     setPM(peripherals);
     rate = _rate;
-=======
-VMManager::VMManager(){
-    peripherals = new PeripheralManager();
-    setPM(peripherals);
->>>>>>> e5a3600436c7c0d7219637cbca14820ce6fbb663
 }
 
 VMManager::~VMManager(){
@@ -40,7 +35,6 @@ void VMManager::loadROM(std::string filename){
     load(tempr);
 }
 
-<<<<<<< HEAD
 void VMManager::run(bool stepmode){ //new TODO: switch to ncurses (maybe, not sure)
     if(!loaded)
         return;
@@ -50,11 +44,6 @@ void VMManager::run(bool stepmode){ //new TODO: switch to ncurses (maybe, not su
     std::chrono::high_resolution_clock::time_point clockT2 = std::chrono::high_resolution_clock::now(); //current time
     std::chrono::duration<double> dura;
     
-=======
-void VMManager::run(bool stepmode){  ///TODO: implement non buffered io
-    if(!loaded)
-        return;
->>>>>>> e5a3600436c7c0d7219637cbca14820ce6fbb663
     std::chrono::time_point<std::chrono::system_clock> t1 = std::chrono::system_clock::now();
     std::chrono::time_point<std::chrono::system_clock> t2;
     uint64_t steps = 0;
@@ -62,7 +51,6 @@ void VMManager::run(bool stepmode){  ///TODO: implement non buffered io
     
     while(!halt){
         if(!stepmode){
-<<<<<<< HEAD
             clockT2 = std::chrono::high_resolution_clock::now();
             dura = std::chrono::duration_cast<std::chrono::duration<double>>(clockT2-clockT1);
             
@@ -73,19 +61,13 @@ void VMManager::run(bool stepmode){  ///TODO: implement non buffered io
             }
             
             if(skiptick){   //to behave like the real R216
-=======
-            if(skiptick){
->>>>>>> e5a3600436c7c0d7219637cbca14820ce6fbb663
                 skiptick--;
                 continue;
             }
             step();
             peripherals->tickAll();
             steps++;
-<<<<<<< HEAD
             
-=======
->>>>>>> e5a3600436c7c0d7219637cbca14820ce6fbb663
             if(breakpoint){
                 std::cout<<"[info] Breakpoint hit, press a key to continue, press 's' to enter step mode (s again to exit)"<<std::endl;
                 std::cin>>temp;
@@ -105,14 +87,8 @@ void VMManager::run(bool stepmode){  ///TODO: implement non buffered io
                 if(millis.count())
                     std::cout<<"[info] Average speed was: "<<(steps/(millis.count()))<<"KHz"<<std::endl;
                 else
-<<<<<<< HEAD
                     std::cout<<"[info] Program ended too quickly, no average speed could be calculated."<<std::endl;
             }
-            
-=======
-                    std::cout<<"[info] Program ended too quickly, no average speed can be calculated."<<std::endl;
-            }
->>>>>>> e5a3600436c7c0d7219637cbca14820ce6fbb663
         }else{
             char temp;
             while(!halt){
