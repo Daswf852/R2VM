@@ -65,16 +65,33 @@ void PeripheralManager::tickAll(){
 }
 
 void PeripheralManager::sendToPort(uint8_t port, uint32_t data){
-    if(data&0x20000){
-        uint16_t *datatx = (uint16_t *) dlsym(ports[port], "datarx");
-        *datatx = (uint16_t)(data);
-           //std::cout<<"send\n";
-    }else if(data&0x10000){
-        bool *bump = (bool *) dlsym(ports[port], "bump");
-        *bump = true;
+    //if(port>portPointer)
+    //    return;
+    uint32_t *datatx = (uint32_t *) dlsym(ports[port], "datarx");
+    if(!datatx){
+        std::cerr<<dlerror()<<std::endl;
+        std::cout<<(int)port<<std::endl;
+        assert(datatx);
     }
+    *datatx = data;
 }
 
 uint32_t PeripheralManager::recvFromPort(uint8_t port){
-    return 0;
+    uint32_t temp;
+    //std::cout<<(int)port<<std::endl;
+    temp =  *((uint32_t *) dlsym(ports[port], "datatx"));
+    //std::cout<<'a'<<std::endl;
+    return temp;
+}
+
+uint16_t PeripheralManager::highestARPort(){
+    uint16_t retval = -1;
+    uint32_t datarx;
+    for(int i=0; i<portPointer; ++i){
+        datarx = *((uint32_t *) dlsym(ports[i], "datatx"));
+         if(datarx & 0x10000){
+            retval = i;
+        }
+    }
+    return retval;
 }

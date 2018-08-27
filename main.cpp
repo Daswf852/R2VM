@@ -4,7 +4,7 @@ std::string infile = "a.bin";
 std::string cfgfile = "ports";
 
 int main(int argc, char **argv){
-    VMManager *VMM = new VMManager();
+    VMManager *VMM = new VMManager(180);
     if(argc > 3 || argc < 2){
         std::cout<<argv[0]<<" [binary] [peripheral config]"<<std::endl
                  <<argv[0]<<" -h"<<std::endl;

@@ -1,8 +1,9 @@
 #include "VMManager.h"
 
-VMManager::VMManager(){
+VMManager::VMManager(int _rate){
     peripherals = new PeripheralManager();
     setPM(peripherals);
+    rate = _rate;
 }
 
 VMManager::~VMManager(){
@@ -33,9 +34,15 @@ void VMManager::loadROM(std::string filename){
     load(tempr);
 }
 
-void VMManager::run(bool stepmode){  ///TODO: implement non buffered io
+void VMManager::run(bool stepmode){ //new TODO: switch to ncurses (maybe, not sure)
     if(!loaded)
         return;
+    
+    std::chrono::duration<double> nanosWait = std::chrono::duration<double,std::nano>(1000000000/rate);
+    std::chrono::high_resolution_clock::time_point clockT1 = std::chrono::high_resolution_clock::now(); //last tick's time
+    std::chrono::high_resolution_clock::time_point clockT2 = std::chrono::high_resolution_clock::now(); //current time
+    std::chrono::duration<double> dura;
+    
     std::chrono::time_point<std::chrono::system_clock> t1 = std::chrono::system_clock::now();
     std::chrono::time_point<std::chrono::system_clock> t2;
     uint64_t steps = 0;
@@ -43,13 +50,23 @@ void VMManager::run(bool stepmode){  ///TODO: implement non buffered io
     
     while(!halt){
         if(!stepmode){
-            if(skiptick){
+            clockT2 = std::chrono::high_resolution_clock::now();
+            dura = std::chrono::duration_cast<std::chrono::duration<double>>(clockT2-clockT1);
+            
+            if(dura.count() >= nanosWait.count()){
+                clockT1 = std::chrono::high_resolution_clock::now();
+            }else{
+                continue;
+            }
+            
+            if(skiptick){   //to behave like the real R216
                 skiptick--;
                 continue;
             }
             step();
             peripherals->tickAll();
             steps++;
+            
             if(breakpoint){
                 std::cout<<"[info] Breakpoint hit, press a key to continue, press 's' to enter step mode (s again to exit)"<<std::endl;
                 std::cin>>temp;
@@ -69,8 +86,9 @@ void VMManager::run(bool stepmode){  ///TODO: implement non buffered io
                 if(millis.count())
                     std::cout<<"[info] Average speed was: "<<(steps/(millis.count()))<<"KHz"<<std::endl;
                 else
-                    std::cout<<"[info] Program ended too quickly, no average speed can be calculated."<<std::endl;
+                    std::cout<<"[info] Program ended too quickly, no average speed could be calculated."<<std::endl;
             }
+            
         }else{
             char temp;
             while(!halt){

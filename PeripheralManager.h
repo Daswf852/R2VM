@@ -12,6 +12,7 @@ class PeripheralManager
         void tickAll();
         void sendToPort(uint8_t port, uint32_t data);
         uint32_t recvFromPort(uint8_t port);
+        uint16_t highestARPort();
         void loadCfg(std::string filename);
 
     protected:
