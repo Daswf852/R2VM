@@ -5,7 +5,11 @@
 
 class VMManager : public R216{
     public:
+<<<<<<< HEAD
         VMManager(int _rate = 60);
+=======
+        VMManager();
+>>>>>>> e5a3600436c7c0d7219637cbca14820ce6fbb663
         ~VMManager();
         void loadROM(std::string filename);
         void loadPER(std::string filename);
@@ -17,7 +21,12 @@ class VMManager : public R216{
     private:
         bool loaded;
         PeripheralManager *peripherals;
+<<<<<<< HEAD
         uint32_t rate;
+=======
+        //bool debugmode;
+        //std::vector<uint16_t> breakpoints;
+>>>>>>> e5a3600436c7c0d7219637cbca14820ce6fbb663
 };
 
 #endif // VMMANAGER_H

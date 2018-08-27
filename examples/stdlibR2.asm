@@ -30,7 +30,11 @@ move:
     add r0, 1            ; * Offset the pointer
     and [r0], 11         ; * Set the column limit (12 for r2term)
     mov r0, [r0-1]       ; * get the x value
+<<<<<<< HEAD
     shl r0, 4            ; * Make space for y
+=======
+    shl r0, 5            ; * Make space for y
+>>>>>>> e5a3600436c7c0d7219637cbca14820ce6fbb663
     or r0, [coords]      ; * Combine x and y
     or r0, 0x1000        ; * Add the command 0x1000 according to the 
                          ;   screen's protocol

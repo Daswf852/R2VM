@@ -1,0 +1,105 @@
+#include <iostream>
+#include <stdio.h>
+#include <stack>
+#ifdef WIN32
+    #include <pdcurses.h>
+#else
+    #include <ncurses.h>
+#endif
+
+//const uint8_t colorlookupfg[16]={30,34,32,36,31,35,33,37,90,94,92,96,91,95,93,97};
+//const uint8_t colorlookupbg[16]={40,44,42,46,41,45,43,47,100,104,102,106,101,105,103,107};
+const uint8_t colorlookupfg[16]={0,1,2,3,4,5,6,7,0,1,2,3,4,5,6,7};
+const uint8_t colorlookupbg[16]={0,1,2,3,4,5,6,7,0,1,2,3,4,5,6,7};
+uint8_t row = 0;
+uint8_t col = 0;
+char chr = '1';
+char temp;
+bool waitingtosend;
+bool readytosend;
+bool cleartx;
+
+extern "C" {
+    uint32_t datatx =     0; //data to be read by the r2
+    uint32_t datarx =     0; //data that is received to be processed on tick
+}
+
+extern "C" void init(){
+    initscr();
+    //timeout(-1);
+    //cbreak();
+    noecho();
+    nodelay(stdscr, 1);
+    start_color();
+    //generate pairs:
+    short pairctr=0;
+    for(int i=0; i<16; ++i){
+        for(int j=0; j<16; ++j){
+            init_pair(pairctr,colorlookupfg[i],colorlookupfg[j]);
+            pairctr++;
+        }
+    }
+    refresh();
+}
+
+extern "C" void deinit(){
+    endwin();
+}
+
+extern "C" void tick(){
+    temp = getchar();
+    if(temp != ERR){
+        if(!waitingtosend){
+            chr=temp;
+            waitingtosend = true;
+        }
+    }
+    
+    if(datarx == 0x10000 && waitingtosend){
+        readytosend = true;
+    }else if(waitingtosend){
+        datatx=0x10000;
+    }
+    
+    if(readytosend){
+        datatx=chr;
+        readytosend = false;
+        waitingtosend = false;
+        cleartx = true;
+    }
+    
+    if(cleartx){
+        datatx=0;
+        cleartx = false;
+    }
+    
+    if(datarx & 0x20000){
+        if(!(datarx&0xF000)){
+            datarx&=0xFFF;
+            if(col > 15){
+                col = 0;
+                row++;
+                move(col, row);
+                refresh();
+            }
+            addch((datarx>33 && datarx<127)?static_cast<char>(datarx):' ');
+            refresh();
+            col++;
+        }else if(datarx&0x1000){
+            col = datarx & 0xF0;
+            col >>= 4;
+            row = datarx & 0xF;
+            move(col, row);
+            refresh();
+        }else if(datarx&0x2000){
+            uint8_t bg = datarx & 0xF0;
+            bg >>= 4;
+            uint8_t fg = datarx & 0xF;
+            fg <<= 4;
+            attron(COLOR_PAIR(bg|fg)); //ill look into colors being wrong soon:tm:
+            refresh();
+            
+        }
+    }
+    datarx = 0;
+}
